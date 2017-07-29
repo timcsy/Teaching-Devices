@@ -4,3 +4,6 @@
 [submodule "Communication/lib/ArduinoJson"]
 	path = Communication/lib/ArduinoJson
 	url = https://github.com/bblanchon/ArduinoJson.git
+[submodule "Communication/lib/arduinoWebSockets"]
+	path = Communication/lib/arduinoWebSockets
+	url = https://github.com/Links2004/arduinoWebSockets.git
