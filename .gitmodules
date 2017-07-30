@@ -7,3 +7,6 @@
 [submodule "Communication/lib/arduinoWebSockets"]
 	path = Communication/lib/arduinoWebSockets
 	url = https://github.com/Links2004/arduinoWebSockets.git
+[submodule "Blockly/lib/blockly"]
+	path = Blockly/lib/blockly
+	url = https://github.com/google/blockly.git
