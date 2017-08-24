@@ -1,68 +1,48 @@
-#include <Arduino.h>
+#include "Button.h"
 
-#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
-
-//needed for library
-#include <DNSServer.h>
-#include <ESP8266WebServer.h>
-#include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
-
-#include <WebSocketsClient.h>
-#include <Hash.h>
-
-WebSocketsClient webSocket;
-
-
-void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
-    switch(type) {
-        case WStype_DISCONNECTED:
-            Serial.printf("[WSc] Disconnected!\n");
-            break;
-        case WStype_CONNECTED:
-            {
-                Serial.printf("[WSc] Connected to url: %s\n",  payload);
-                
-                // send message to server when Connected
-                webSocket.sendTXT("{\"1\":{\"api\":\"Web.Page:::view()\",\"args\":{}},\"cookies\":{\"current_timestamp\":\"1501349471\"}}");
-            }
-            break;
-        case WStype_TEXT:
-            Serial.printf("[WSc] get text: %s\n", payload);
-            
-            // send message to server
-            // webSocket.sendTXT("message here");
-            break;
-        case WStype_BIN:
-            Serial.printf("[WSc] get binary length: %u\n", length);
-            hexdump(payload, length);
-
-            // send data to server
-            // webSocket.sendBIN(payload, length);
-            break;
-    }
+void setup()
+{
+	Serial.begin(115200);
+	pins = new PinSet({
+		{D0, Pin::DIGITAL},
+		{D1, Pin::DIGITAL},
+		{D2, Pin::DIGITAL},
+		{D3, Pin::DIGITAL},
+		{D4, Pin::DIGITAL},
+		{D5, Pin::DIGITAL},
+		{D6, Pin::DIGITAL},
+		{D7, Pin::DIGITAL},
+		{D8, Pin::DIGITAL},
+		{A0, Pin::ANALOG}
+	});
+	Button* btn = new Button(D4);
+	OnPressListener* onPressListener = new OnPressListener();
+	btn->addListener(onPressListener);
+	
+	receiver = new APIReceiver();
+	API::setup("140.116.102.78", 8080);
+	
+	//API::parse();
 }
 
-void setup() {
-    // put your setup code here, to run once:
-    Serial.begin(115200);
-
-    //WiFiManager
-    //Local intialization. Once its business is done, there is no need to keep it around
-    WiFiManager wifiManager;
-    
-    wifiManager.autoConnect("AutoConnectAP");
-    
-    Serial.println("connected...yeey :)");
-    
-    //Serial.setDebugOutput(true);
-    Serial.setDebugOutput(true);
-    
-    webSocket.begin("tew.tw", 8080);
-    //webSocket.setAuthorization("user", "Password"); // HTTP Basic Authorization
-    webSocket.onEvent(webSocketEvent);
-}
-
-void loop() {
-    // put your main code here, to run repeatedly:
-    webSocket.loop();
+//int i = 0;
+void loop()
+{
+	pins->loop();
+	
+	API::loop();
+	/*
+	// send message to server
+	DynamicJsonBuffer jsonBuffer;
+	//send("{\"1\":{\"api\":\"Web.Page:::view()\",\"args\":{}},\"cookies\":{\"current_timestamp\":\"1501349471\"}}");
+	String api = "Device.Device::send(Hello";
+	JsonObject& args = jsonBuffer.createObject();
+	API::send(api + (++i) + ")", args);
+	*/
+	/*
+	DynamicJsonBuffer jsonBuffer;
+	JsonArray& args = jsonBuffer.createArray();
+	args.add("This is APIList Test!");
+	APIList::run("Serial.println", args);
+	*/
 }

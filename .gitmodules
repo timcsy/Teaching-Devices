@@ -10,3 +10,9 @@
 [submodule "Blockly/lib/blockly"]
 	path = Blockly/lib/blockly
 	url = https://github.com/google/blockly.git
+[submodule "Reflection/lib/rttr"]
+	path = Reflection/lib/rttr
+	url = https://github.com/rttrorg/rttr.git
+[submodule "Reflection/lib/ponder"]
+	path = Reflection/lib/ponder
+	url = https://github.com/billyquith/ponder.git
